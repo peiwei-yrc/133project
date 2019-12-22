@@ -1,0 +1,248 @@
+
+#include <U8glib.h>
+
+const unsigned char PROGMEM p[] = {
+  /*--  文字:  浇  --*/
+/*--  Fixedsys12;  此字体下对应的点阵为：宽x高=16x16   --*/
+0x00,0x00,0x00,0x00,0x00,0x4E,0x00,0x08,0x27,0x42,0x00,0x08,0x21,0x42,0x18,0x10,
+0x2A,0x7C,0x04,0x20,0x24,0x40,0x02,0x40,0x1A,0x40,0x01,0x80,0xF2,0x70,0x06,0x00,
+
+/*--  文字:  水  --*/
+/*--  Fixedsys12;  此字体下对应的点阵为：宽x高=16x16   --*/
+0x11,0x4C,0xFF,0xFE,0x11,0x42,0x00,0x01,0x00,0x41,0x06,0x02,0x03,0x00,0x05,0x80,
+0x30,0xC0,0x04,0x60,0x40,0x3E,0x04,0x10,0x06,0x20,0x04,0x08,0x08,0x20,0x00,0x04,
+
+
+};
+const unsigned char PROGMEM q[] = {
+/*--  文字:  不  --*/
+/*--  Fixedsys12;  此字体下对应的点阵为：宽x高=16x16   --*/
+0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x4E,0x00,0x08,0x40,0x30,0x27,0x42,
+0x00,0x08,0x40,0x40,0x21,0x42,0x18,0x10,0x40,0x80,0x2A,0x7C,0x04,0x20,0x41,0x00,
+
+/*--  文字:  浇  --*/
+/*--  Fixedsys12;  此字体下对应的点阵为：宽x高=16x16   --*/
+0x24,0x40,0x02,0x40,0x42,0x00,0x1A,0x40,0x01,0x80,0x70,0x00,0xF2,0x70,0x06,0x00,
+0x4F,0xFF,0x11,0x4C,0xFF,0xFE,0x42,0x00,0x11,0x42,0x00,0x01,0x41,0x00,0x00,0x41,
+
+/*--  文字:  水  --*/
+/*--  Fixedsys12;  此字体下对应的点阵为：宽x高=16x16   --*/
+0x06,0x02,0x40,0x80,0x03,0x00,0x05,0x80,0x40,0x40,0x30,0xC0,0x04,0x60,0x40,0x20,
+0x40,0x3E,0x04,0x10,0x40,0x10,0x06,0x20,0x04,0x08,0x00,0x08,0x08,0x20,0x00,0x04,
+
+};
+
+
+#define SSID        "HUAWEI Mate 20" //改为你的热点名称, 不要有中文
+#define PASSWORD    "zhouyi1234"//改为你的WiFi密码Wi-Fi密码
+#define DEVICEID    "576164583" //OneNet上的设备ID
+String apiKey = "xpV21JdOBQdtVpZe1Mwyp75AO9M=";//与你的设备绑定的APIKey
+
+/***/
+#define HOST_NAME   "api.heclouds.com"
+#define HOST_PORT   (80)
+#define INTERVAL_SENSOR   5000             //定义传感器采样时间间隔  597000
+#define INTERVAL_NET      5000             //定义发送时间
+//传感器部分================================   
+#include <Wire.h>                                  //调用库  
+#include <ESP8266.h>
+#include <I2Cdev.h>                                //调用库  
+
+/*******光照*******/
+#define  sensorPin_1  A0
+#define IDLE_TIMEOUT_MS  3000      // Amount of time to wait (in milliseconds) with no data 
+                                   // received before closing the connection.  If you know the server
+                                   // you're accessing is quick to respond, you can reduce this value.
+
+//WEBSITE     
+char buf[10];
+
+#define INTERVAL_sensor 2000
+unsigned long sensorlastTime = millis();
+
+float tempOLED, humiOLED, lightnessOLED;
+
+#define INTERVAL_OLED 1000
+
+String mCottenData;
+String jsonToSend;
+
+//3,传感器值的设置 
+float sensor_tem, sensor_hum, sensor_lux;                    //传感器温度、湿度、光照   
+char  sensor_tem_c[7], sensor_hum_c[7], sensor_lux_c[7] ;    //换成char数组传输
+#include <SoftwareSerial.h>
+#define EspSerial mySerial
+#define UARTSPEED  9600
+SoftwareSerial mySerial(2, 3); /* RX:D3, TX:D2 */
+ESP8266 wifi(&EspSerial);
+//ESP8266 wifi(Serial1);                                      //定义一个ESP8266（wifi）的对象
+unsigned long net_time1 = millis();                          //数据上传服务器时间
+unsigned long sensor_time = millis();                        //传感器采样时间计时器
+
+//int SensorData;                                   //用于存储传感器数据
+String postString;                                //用于存储发送数据的字符串
+//String jsonToSend;   
+int a;//用于存储发送的json格式参数
+
+U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NONE);     //设置OLED型号  
+//-------字体设置，大、中、小
+#define setFont_L u8g.setFont(u8g_font_7x13)
+#define setFont_M u8g.setFont(u8g_font_fixed_v0r)
+#define setFont_S u8g.setFont(u8g_font_fixed_v0r)
+#define setFont_SS u8g.setFont(u8g_font_fub25n)
+
+
+void setup(void)     //初始化函数  
+{       
+  //初始化串口波特率  
+    Wire.begin();
+    Serial.begin(115200);
+    while (!Serial); // wait for Leonardo enumeration, others continue immediately
+    Serial.print(F("setup begin\r\n"));
+    delay(100);
+    pinMode(sensorPin_1, INPUT);
+
+  WifiInit(EspSerial, UARTSPEED);
+
+  Serial.print(F("FW Version:"));
+  Serial.println(wifi.getVersion().c_str());
+
+  if (wifi.setOprToStationSoftAP()) {
+    Serial.print(F("to station + softap ok\r\n"));
+  } else {
+    Serial.print(F("to station + softap err\r\n"));
+  }
+
+  if (wifi.joinAP(SSID, PASSWORD)) {
+    Serial.print(F("Join AP success\r\n"));
+
+    Serial.print(F("IP:"));
+    Serial.println( wifi.getLocalIP().c_str());
+  } else {
+    Serial.print(F("Join AP failure\r\n"));
+  }
+
+  if (wifi.disableMUX()) {
+    Serial.print(F("single ok\r\n"));
+  } else {
+    Serial.print(F("single err\r\n"));
+  }
+
+  Serial.print(F("setup end\r\n"));
+    Serial.println("信息打印"); 
+  
+}
+void loop(void)     //循环函数  
+{   
+  if (sensor_time > millis())  sensor_time = millis();  
+    
+  if(millis() - sensor_time > INTERVAL_SENSOR)              //传感器采样时间间隔  
+  {  
+    getSensorData();                                        //读串口中的传感器数据
+    sensor_time = millis();
+  }  
+
+    
+  if (net_time1 > millis())  net_time1 = millis();
+  
+  if (millis() - net_time1 > INTERVAL_NET)                  //发送数据时间间隔
+  {                
+    updateSensorData();                                     //将数据上传到服务器的函数
+    net_time1 = millis();
+  }
+int b;
+b=300;
+ u8g.firstPage();//u8glib规定的写法
+ if(b>=500){ 
+  u8g.nextPage();
+    setFont_M;
+    u8g.drawBitmapP(0, 0, 4, 16, p);
+    //u8g.drawXBMP(0, 0, 128, 64, ri);
+    /*u8g.setPrintPos(0,10);
+    u8g.print("char 2:");
+    u8g.setPrintPos(0,25);
+    u8g.print(ch,HEX);
+    u8g.setPrintPos(0,40);
+    u8g.print(ch,BIN);*/
+  }
+ 
+ else
+ {
+ u8g.nextPage();
+  
+   u8g.drawBitmapP(0, 0, 6, 16, q);
+  }
+ 
+  
+}
+
+void getSensorData(){  
+    sensor_tem = a;  
+    sensor_hum = a;
+    //获取光照
+    sensor_lux = analogRead(A0);    
+    delay(1000);
+    dtostrf(sensor_tem, 2, 1, sensor_tem_c);
+    dtostrf(sensor_hum, 2, 1, sensor_hum_c);
+    dtostrf(sensor_lux, 3, 1, sensor_lux_c);
+}
+void updateSensorData() {
+  if (wifi.createTCP(HOST_NAME, HOST_PORT)) { //建立TCP连接，如果失败，不能发送该数据
+    Serial.print("create tcp ok\r\n");
+    
+static const byte  GETDATA[]  PROGMEM = {
+  "GET https://api.heclouds.com/devices/576164583/datapoints?datastream_id=aneirong&limit=1 HTTP/1.1\r\nHost:api.heclouds.com\r\napi-key:xpV21JdOBQdtVpZe1Mwyp75AO9M=\r\nConnection: close\r\n\r\n"
+};//关键头文件
+wifi.sendFromFlash(GETDATA, sizeof(GETDATA));
+
+  uint8_t aneirong[512] = {0};
+  uint32_t len = wifi.recv(aneirong, sizeof(aneirong), 20000);
+  if (len > 0) {
+    Serial.print(F("Received:["));
+    for (uint32_t i = 0; i < len; i++) {
+      Serial.print((char)aneirong[i]);
+    }
+    Serial.print(F("]\r\n"));
+  }
+
+
+
+
+    postString="POST /devices/";
+    postString+=DEVICEID;
+    postString+="/datapoints?type=3 HTTP/1.1";
+    postString+="\r\n";
+    postString+="api-key:";
+    postString+=apiKey;
+    postString+="\r\n";
+    postString+="Host:api.heclouds.com\r\n";
+    postString+="Connection:close\r\n";
+    postString+="Content-Length:";
+    postString+=jsonToSend.length();
+    postString+="\r\n";
+    postString+="\r\n";
+    postString+=jsonToSend;
+    postString+="\r\n";
+    postString+="\r\n";
+    postString+="\r\n";
+
+  const char *postArray = postString.c_str();                 //将str转化为char数组
+  Serial.println(postArray);
+  wifi.send((const uint8_t*)postArray, strlen(postArray));    //send发送命令，参数必须是这两种格式，尤其是(const uint8_t*)
+  Serial.println("send success");   
+    
+      postArray = NULL;                                       //清空数组，等待下次传输数据
+  
+  } else {
+    Serial.print("create tcp err\r\n");
+  }
+
+
+
+
+
+
+
+
+  
+}
