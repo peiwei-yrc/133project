@@ -1,0 +1,113 @@
+<view class="tab">
+<view class="tab-item {{tab==0?'active':''}}" bindtap="changeItem" data-item="0" >首页</view>
+<view class="tab-item {{tab==1?'active':''}}" bindtap="changeItem" data-item="1" >那些花儿</view>
+<view class="tab-item {{tab==2?'active':''}}" bindtap="changeItem" data-item="2" >模式选择器</view>
+</view>
+
+<view class="content">
+
+<swiper current-item-id="a" current="{{item}}" bindchange="changeTab">
+<swiper-item item-id="a" class="first">
+<view class="top">盆栽浇水器</view>
+<view>更多养花知识请参考http://www.yangzhiriji.com/</view>
+</swiper-item>
+<swiper-item ><include src="communicate.wxml" /></swiper-item>
+<swiper-item ><include src="try.wxml" /></swiper-item>
+<swiper-item ><include src="shygrass.wxml" /></swiper-item>
+<swiper-item ><include src="sunflower.wxml" /></swiper-item>
+<swiper-item ><include src="santhand.wxml" /></swiper-item>
+
+</swiper>
+
+</view>
+
+
+
+
+
+
+<view class="tab-item {{tab==1?'active':''}}" bindtap="changeItem" data-item="1">辅助器</view>
+<view class="tab-item {{tab==2?'active':''}}" bindtap="changeItem" data-item="2">花友交流</view>
+<view class="tab-item {{tab==3?'active':''}}" bindtap="changeItem" data-item="3">仙人掌</view>
+
+
+
+<scroll-view class="content-flower" scroll-y>
+<view>
+仙人掌是仙人掌科缩刺仙人掌的变种。丛生肉质灌木，高1.5-3米。是仙人掌科缩刺仙人掌的变种。丛生肉质灌木，高1.5-3米。上部分枝宽倒卵形、倒卵状椭圆形或近圆形，绿色至蓝绿色，无毛；刺黄色，有淡褐色横纹，坚硬；倒刺直立。叶钻形，绿色，早落。花辐状；花托倒卵形，基部渐狭，绿色；萼状花被黄色，具绿色中肋；花丝淡黄色；
+</view>
+
+<view>
+1、盆栽的仙人掌类植物一般要求排水透气良好的石灰质砂土或沙壤土，过分肥沃和含过多可溶性盐的土壤，容易引起根系腐烂，造成损害。对一些喜石灰质土壤的地生类仙人掌，在生长期内可施石灰水2～3次，防止盆土的酸化，方法是用2斤水加1两生石 灰，充分搅拌，溶化沉淀后，使用上面的澄清液浇灌，此液可再加水重复使用多次。
+</view>
+
+<view>
+2、仙人掌类生长的适宜温度为20～30℃，最高不超过35℃，最低不低于5℃。冬季保持5℃以上温度即可安全越冬
+</view>
+
+<view>
+3、仙人掌类为喜阳光植物，属强阳性，在强烈的阳光照射条件下才能花朵鲜艳。
+</view>
+
+<button class="santhand" bindtap="santhand">开启仙人掌模式</button>
+</scroll-view>
+
+
+<scroll-view class="content-flower" scroll-y>
+
+<view>
+含羞草：为豆科多年生草本或亚灌木，由于叶子会对热和光产生反应，受到外力触碰会立即闭合，所以得名含羞草。形状似绒球。开花后结荚果，果实呈扁圆形。叶为羽毛状复叶互生，呈掌状排列。大约在盛夏以后开花，头状花序长圆形，2-3个生于叶腋。花为白色、粉红色，花萼钟状，有8个微小萼齿，花瓣四裂，雄蕊四枚，子房无毛。荚果扁平，每荚节有1颗种子，成熟时节间脱落。花期9月。
+</view>
+<view>
+1、栽培养殖含羞草直接使用园土就行，想要让它生长更快，就应该选择比较疏松有营养的土壤。
+</view>
+<view>
+2、养护的时候要将其放在有阳光处养，让植株每天都可以见到充足的太阳光。它也可以稍微耐半阴，但如果养护环境过于阴暗，就会直接影响其生长。
+</view>
+<view>
+3、最适合植株生长的温度是在20-28℃之间，注意气温不能太低，尤其是在冬季要注意保暖，并适当的减少浇水量。到了冬天就要搬到温暖一些的地方养，比如室内，温度不可以低于10℃。
+</view>
+<view>
+
+</view>
+
+<button class="shygrass" bindtap="shygrass">开启含羞草模式</button>
+</scroll-view>
+
+
+<scroll-view class="content-flower" scroll-y>
+<view>
+向日葵：是菊科、向日葵属的植物。因花序随太阳转动而得名。一年生草本，高1-3.5米，最高可达9米。茎直立，圆形多棱角，质硬被白色粗硬毛。
+</view>
+<view>
+1、向日葵一般在四月到六月播种。由于适于发芽的温度较高，通常在温度升高到20度后进行种植，种子发芽时间在播种后10至15天左右开始。
+</view>
+<view>
+2、向日葵喜欢弱酸性到中性土壤。我们以红土（小粒）为主要成分，加上混合土壤与覆盖叶和堆肥以及花卉栽培土壤混合。
+</view>
+<view>
+3、肥料每月施用一次液体肥料或化肥。需要注意的是，由于向日葵具有很强的养分吸收能力，如果你给肥料太多，会烧伤向日葵植株，所以请小心 控制施肥量。此外，如果仅施用富氮肥料，则只有茎和叶可能生长并且花可能不会开花。打开花时，请用大量的磷酸换成肥料。
+</view>
+<view>
+4、在培育向日葵时，请注意真菌感染，真菌感染会使叶子枯萎而变色为黄绿色的一种疾病。
+因为它很容易在高湿度下发展，所以改善通风很重要。另外，一旦发现，就用可湿性粉剂消毒剂涂抹。
+</view>
+
+<button class="shygrass" bindtap="sunflower">开启向日葵模式</button>
+</scroll-view>
+
+<scroll-view class="choose" scroll-y>
+<view style="height:1000rpx"
+>这里是模式选择器，可以点击与所种植的花草对应的按钮，为您的植物提供专属服务(ps.左滑随便看看也行哟)
+</view>
+<view class="tab-item {{tab==1?'active':''}}" bindtap="changeItem" data-item="3">含羞草</view>
+<view class="tab-item {{tab==2?'active':''}}" bindtap="changeItem" data-item="4">向日葵</view>
+<view class="tab-item {{tab==3?'active':''}}" bindtap="changeItem" data-item="5">仙人掌</view>
+</scroll-view>
+
+<swiper current="{{item1}}" bindchange="changeTab">
+<swiper-item ><include src="shygrass.wxml" /></swiper-item>
+<swiper-item ><include src="sunflower.wxml" /></swiper-item>
+<swiper-item ><include src="santhand.wxml" /></swiper-item>
+</swiper>
+      

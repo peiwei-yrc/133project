@@ -1,0 +1,76 @@
+/**index.wxss**/
+
+page {
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+background-color: rgba(127, 187, 8, 0.925);
+color: brown;
+height:100%;
+}
+
+.tab{
+display:flex;
+}
+.tab-item{
+flex:1;
+font-size:10pt;
+text-align:center;
+line-height: 72rpx;
+border-bottom:6rpx solid #eee;
+}
+.tab-item.active{
+color:blue;
+border-bottom-color:blue;
+}
+
+.content{
+flex:1;
+}
+.content > swiper{
+height: 100%
+}
+.top{
+padding-left: 80px;
+padding-top: 20px;
+padding-bottom: 30px;
+font-size: 30px;
+color:yellow;
+}
+
+.sunflower{
+padding: 20px 0;
+background-color:yellow;
+}
+.content-flower{
+height: 100%;
+}
+.choose{
+height: 100%;
+}
+.shygrass{
+padding: 20px 0;
+background-color:yellow;
+}
+.santhand{
+padding: 20px 0;
+background-color:yellow;
+}
+
+.first{
+height: 10000px;
+}
+
+.input1{
+width: 600rpx;
+margin: 10rpx;
+border:2rpx solid #eee;
+}
+
+.back{
+width: 600rpx;
+margin: 10rpx;
+height: 500rpx;
+border:2rpx solid #eee;
+overflow-x: auto;
+}
